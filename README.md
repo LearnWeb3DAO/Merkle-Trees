@@ -217,3 +217,7 @@ If all your tests pass, you have successfully learnt what a merkle tree is and h
 Hope you had fun!!
 
 Cheers 🥂
+
+
+# Contributors
+**This module was built in collaboration with [Hypotenuse Labs](https://hypotenuse.ca/)**
