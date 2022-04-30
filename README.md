@@ -34,18 +34,23 @@ To hash Transaction A into Hash A, a one-way cryptographic hash function is used
 Each blockchain uses different hash functions, but they all have the same properties in common.
 
 #### Deterministic
+
 The same input always has the same output
 
 #### Computationally Efficient
+
 The hash calculation is fast.
 
 #### Cannot be Reversed Engineered
+
 Given a resulting hash, it is near impossible to determine the input.
 
 #### Collision Resistant
+
 Two different inputs never generate the same output.
 
 #### Pre-Image Resistant
+
 For essentially all pre-specified outputs, it is computationally infeasible to find any input that hashes to that output. For example: given `y`, it is difficult to find an `x` such that `h(x) = y`
 
 ## Benefits of Merkle Trees in Blockchains
@@ -62,4 +67,4 @@ Merkle Trees aren't just used in blockchain applications. Some popular applicati
 
 - [IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System)
 - [Git](https://github.com)
-- Distributed databases such as [AWS DynamoDB](https://aws.amazon.com/dynamodb) and [Apache Cassandra](https://cassandra.apache.org/_/index.html) use Merkle trees to control discrepancies 
+- Distributed databases such as [AWS DynamoDB](https://aws.amazon.com/dynamodb) and [Apache Cassandra](https://cassandra.apache.org/_/index.html) use Merkle trees to control discrepancies
