@@ -1,6 +1,6 @@
 # Merkle Trees
 
-Merkle Trees are a fundamental concept in blockchain technology.
+Merkle Trees are a fundamental concept in blockchain technology. They're a special kind of binary tree which is used to encode large chunks of information. The cool thing about Merkle Trees is that they kind of 'build up' from the bottom-up, and allow you to verify if some value is present in the tree or not without having to loop over every element of the tree. This can be quite useful, as we will see. 🧐
 
 ## What is a Merkle Tree?
 
@@ -10,6 +10,10 @@ A typical Merkle Tree looks something like this:
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Hash_Tree.svg/1920px-Hash_Tree.svg.png)
 
 (Reference from [using-merkle-trees-for-nft-whitelists](https://medium.com/@ItsCuzzo/using-merkle-trees-for-nft-whitelists-523b58ada3f9))
+
+Let me explain what is going on. All the leaf nodes of the tree, i.e. nodes that don't have any further children, include hashes of data that you want to encode. Note that the values you want to encode in the tree are always just part of the leaf nodes. Since it is a binary tree, each non-leaf node has two children. As you move up from the leaf nodes, the parents will have the hash of the combined hashes of the leaf nodes, and so on.
+
+As you keep doing this, eventually you will end up at the single top-level node, known as the Merkle Tree Root, this will come to play a very important role.
 
 ## Simple Example
 
@@ -31,21 +35,21 @@ A miner can recompute the Merkle Root in their own block and try to publish that
 
 ## Hash Function
 
-To hash Transaction A into Hash A, a one-way cryptographic hash function is used. Once hashed, Hash A cannot be easily turned into Transaction A; the hash is not reversible.
+We have covered Hashing Functions before when talking about IPFS, but just to recap: to hash Transaction A into Hash A, a one-way cryptographic hash function is used. Once hashed, Hash A cannot be turned into Transaction A; the hash is not reversible.
 
 Each blockchain uses different hash functions, but they all have the same properties in common.
 
 #### Deterministic
 
-The same input always has the same output
+The same input always has the same output when passed into a hashing function.
 
 #### Computationally Efficient
 
-The hash calculation is fast.
+Calculating the hash of an input value is fast.
 
 #### Cannot be Reversed Engineered
 
-Given a resulting hash, it is near impossible to determine the input.
+Given a resulting hash, it is near impossible to determine the input. i.e. hash functions are one-way functions.
 
 #### Collision Resistant
 
@@ -71,37 +75,47 @@ Merkle Trees aren't just used in blockchain applications. Some popular applicati
 - [Git](https://github.com)
 - Distributed databases such as [AWS DynamoDB](https://aws.amazon.com/dynamodb) and [Apache Cassandra](https://cassandra.apache.org/_/index.html) use Merkle trees to control discrepancies
 
+## Verification of Presence in Merkle Trees
+So, how do we actually verify that some data is part of a Merkle Tree?
 
-## Build 
+You don't want the verifier to loop over every leaf node of the Merkle Tree, as it can be quite large, so how can we do this in a more efficient way?
 
-We will try to use Merkle trees for Whitelisting addressees for an NFT Collection.
+Let's say the `Verifier` only has the `Merkle Root` `r`, that is, the top-level parent node of the tree. You, as a `Prover`, want to prove to the `Verifier` that some value `K` exists in the Merkle Tree.
 
-The reason why Merkle trees will play an important role here is that we will not add each address individually to the whitelist but will only save the root of the Merkle tree within our contract. This will help save gas for us as we don't have to manage to add each address to the whitelist.
-
-So now when the user will try to mint using their whitelist spot, they will submit proof which will verify that they are indeed a part of the whitelist.
-
-These proofs are called `Merkle Proofs` 
-
-Imagine you have to prove that a value `K` exists in the data. Now you can create `H[k]` by hashing k, in our example, we will use `keccak256` algorithm for hashing.
-
-A verifier who only has the root hash `r` can be given a `K` and an associated Merkle proof which convinces them that H[K] is at a leaf node and was used at that leaf node to compute the root hash `r`.
-
-If a Merkle proof says that K was the at a given leaf node and was used to generate `r`, no attacker can come up with another Merkle proof that says that `K` was actually at a different leaf node. So essentially an attacker cannot come up with a Merkle root `r` and two values of leaf nodes for K. So K can only have one unique leaf node for which the root r can be generated.
+To do this, you can generate a `Merkle Proof`. Let's try to understand what a `Merkle Proof` actually is with an example Merkle Tree.
 
 ![](https://i.imgur.com/XsxMA0b.png)
-
 (Referenced [Merkle Proofs Explained](https://medium.com/crypto-0-nite/merkle-proofs-explained-6dd429623dc5))
 
+The main idea is as follows: if you can give the `Verifier` the value of `K`, along with all the relevant nodes from the tree that get hashed up together to build up the `r` hash, the `Verifier` can compare the computed root value against `r` that they already have. If they are the same hash, it must mean that `K` was in fact present in the Merkle Tree, as you could not have generated the same Merkle Root hash with different input data.
 
-To check that the proof provided was indeed valid, all the verifier has to do is put H[K] at a given node and provided only a part of the tree, the verifier will parse the part of the tree and check if the root hash `r` is actually derived and validate the proof.
+In the diagram above, let's think about what info must be given to the Verifier that will positively prove to the Verifier that `K` is part of the Merkle Tree.
+
+- Value of `K` itself (so Verifier can compute `H(K)` on it's own)
+- `H(L)`, so the verifier can compute `H(KL)`
+- `H(IJ)` so the verifier can compute `H(IJKL)`
+- `H(MNOP)` so the verifier can compute `H(IJKLMNOP)`
+- `H(ABCDEFGH)` so the verifier can compute `H(ABCDEFGHIJKLMNOP)`
 
 Again it is important to remember that only one given combination of nodes can generate this unique root `r` because the Merkle tree is a  `collision-resistant hash function` which means it is a hash function that given two inputs is almost impossible to produce the same output.
 
 For our given example, we only need to provide the following nodes to be able to prove that H[K] actually exists in our nodes:
-
-
 ![](https://i.imgur.com/nDe4iYS.png)
 
+At this point, if the computed value of `H(ABCDEFGHIJKLMNOP)` matches the previously known value `r` that the Verifier had, it must be true that `K` existed in the Merkle Tree, or else the hashes wouldn't be the same. 
+
+This is *significantly* more efficent than looping over the entire Merkle Tree, as for a tree with `n` number of elements, you only have to provide roughly `log(n)` elements as part of the proof (one for each 'level' of the tree). This means if you had a LOT of data, Merkle Trees are wayyyyy more efficient than storing arrays or mappings.
+
+> When ENS launched their token contract, they were airdropping the $ENS token to over 100,000 wallet addresses. They were able to deploy their contract, at a time of extremely high gas fees, for a MUCH lower price than what it would've been had they stored the wallet addresses in an array (where even storing a few hundred addresses could easily exceed gas limits of a block) - https://etherscan.io/tx/0xdfc76788b13ab1c033c7cd55fdb7a431b2bc8abe6b19ac9f7d22f4105bb43bff
+
+## Use Cases in Smart Contracts
+Since the Verifier does not need to store the entire Merkle Tree to verify if something is a part of it, Merkle Trees actually come in quite handy for certain things.
+
+In Sophomore, we created a Whitelist dApp that stored user addresses in a mapping. While that approach works, storing data in smart contract storage is by far the most expensive thing you can do in terms of gas. So what if you had to store 1000 addresses? What if 10,000? What about 100,000? 🤯
+
+At that point, utilizing smart contract storage directly is just infeasible and can easily cost millions of dollars just to whitelist people. On the other hand, you could build up a Merkle Tree and just store the Merkle Root value in the contract - a measly `bytes32` value. In this scenario, the contract is now the `Verifier`, and users who wish to use their whitelist spot for minting NFTs, let's say, become the `Provers` proving that they are indeed part of the whitelist. Let's see how this would work.
+
+## Build 
 
 Let's see how all this works practically for our whitelist example.
 
@@ -153,8 +167,8 @@ contract Whitelist {
         merkleRoot = _merkleRoot;
     }
 
-    function checkInWhitelist(bytes32[] calldata proof, uint64 maxAllowanceToMint) view public returns(bool) {
-        bytes32 leaf = keccak256(abi.encode(msg.sender,maxAllowanceToMint));
+    function checkInWhitelist(bytes32[] calldata proof, uint64 maxAllowanceToMint) view public returns (bool) {
+        bytes32 leaf = keccak256(abi.encode(msg.sender, maxAllowanceToMint));
         bool verified = MerkleProof.verify(proof, merkleRoot, leaf);
         return verified;
     }
@@ -167,9 +181,9 @@ What's exactly happening here? So as we mentioned we are not storing the address
 We also have another function `checkInWhitelist` which takes in a `proof` and `maxAllowanceToMint`. 
 `maxAllowanceToMint` is a variable that keeps track of the number of NFT's a given address can mint.
 
-The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
+The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
 
-Now we use the Openzeppelin's MerkleProof contract to verify that the proof sent by the user is indeed valid. Note how Openzeppelin performs the verification on a high level is similar to the verification of the Merkle proof we talked about earlier in the tutorial.
+Now we use the OpenZeppelin's `MerkleProof` library to verify that the proof sent by the user is indeed valid. Note how Openzeppelin performs the verification on a high level is similar to the verification of the Merkle proof we talked about earlier in the tutorial.
 
 Next, let's write a test that can help determine if the code in our contract actually works.
 
@@ -181,11 +195,22 @@ const { ethers } = require("hardhat");
 const keccak256 = require("keccak256");
 const { MerkleTree } = require("merkletreejs");
 
+function encodeLeaf(address, spots) {
+  // Same as `abi.encodePacked` in Solidity
+  return ethers.utils.defaultAbiCoder.encode(
+    ["address", "uint64"],
+    [address, spots]
+  );
+}
+
 describe("Check if merkle root is working", function () {
   it("Should be able to verify if the a given address is in whitelist or not", async function () {
+  
+    // Get a bunch of test addresses
     const [owner, addr1, addr2, addr3, addr4, addr5] =
       await ethers.getSigners();
     
+    // Create an array of elements you wish to encode in the Merkle Tree
     const list = [
       encodeLeaf(owner.address, 2),
       encodeLeaf(addr1.address, 2),
@@ -195,33 +220,37 @@ describe("Check if merkle root is working", function () {
       encodeLeaf(addr5.address, 2),
     ];
 
+    // Create the Merkle tree using the hashing algorithm `keccak256`
+    // Make sure to sort the tree so that it can be produced deterministically regardless
+    // of the order of the input list
     const merkleTree = new MerkleTree(list, keccak256, {
       hashLeaves: true,
       sortPairs: true,
     });
+    // Compute the Merkle Root
     const root = merkleTree.getHexRoot();
 
+    // Deploy the Whitelist contract
     const whitelist = await ethers.getContractFactory("Whitelist");
     const Whitelist = await whitelist.deploy(root);
     await Whitelist.deployed();
 
+    // Compute the Merkle Proof of the owner address (0'th item in list)
+    // off-chain. The leaf node is the hash of that value.
     const leaf = keccak256(list[0]);
     const proof = merkleTree.getHexProof(leaf);
 
+    // Provide the Merkle Proof to the contract, and ensure that it can verify
+    // that this leaf node was indeed part of the Merkle Tree
     let verified = await Whitelist.checkInWhitelist(proof, 2);
     expect(verified).to.equal(true);
+    
+    // Provide an invalid Merkle Proof to the contract, and ensure that
+    // it can verify that this leaf node was NOT part of the Merkle Tree
     verified = await Whitelist.checkInWhitelist([], 2);
     expect(verified).to.equal(false);
   });
 });
-
-
-function encodeLeaf(address, spots) {
-  return ethers.utils.defaultAbiCoder.encode(
-    ["address", "uint64"],
-    [address, spots]
-  );
-}
 ```
 
 Here we first get some signers using hardhat's extended ethers package for testing.
