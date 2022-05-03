@@ -117,6 +117,9 @@ At that point, utilizing smart contract storage directly is just infeasible and 
 
 ## Build 
 
+# Prerequisites
+- Please learn the basics of Mocha and Chai if you are not aware of them, to understand what they are follow this [tutorial](https://medium.com/spidernitt/testing-with-mocha-and-chai-b8da8d2e10f2)
+
 Let's see how all this works practically for our whitelist example.
 
 - To set up a Hardhat project, Open up a terminal and execute these commands
