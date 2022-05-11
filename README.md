@@ -209,7 +209,7 @@ function encodeLeaf(address, spots) {
 }
 
 describe("Check if merkle root is working", function () {
-  it("Should be able to verify if the a given address is in whitelist or not", async function () {
+  it("Should be able to verify if a given address is in whitelist or not", async function () {
   
     // Get a bunch of test addresses
     const [owner, addr1, addr2, addr3, addr4, addr5] =
@@ -225,7 +225,7 @@ describe("Check if merkle root is working", function () {
       encodeLeaf(addr5.address, 2),
     ];
 
-    // Create the Merkle tree using the hashing algorithm `keccak256`
+    // Create the Merkle Tree using the hashing algorithm `keccak256`
     // Make sure to sort the tree so that it can be produced deterministically regardless
     // of the order of the input list
     const merkleTree = new MerkleTree(list, keccak256, {
