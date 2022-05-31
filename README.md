@@ -104,7 +104,7 @@ For our given example, we only need to provide the following nodes to be able to
 
 At this point, if the computed value of `H(ABCDEFGHIJKLMNOP)` matches the previously known value `r` that the Verifier had, it must be true that `K` existed in the Merkle Tree, or else the hashes wouldn't be the same. 
 
-This is *significantly* more efficent than looping over the entire Merkle Tree, as for a tree with `n` number of elements, you only have to provide roughly `log(n)` elements as part of the proof (one for each 'level' of the tree). This means if you had a LOT of data, Merkle Trees are wayyyyy more efficient than storing arrays or mappings.
+This is *significantly* more efficient than looping over the entire Merkle Tree, as for a tree with `n` number of elements, you only have to provide roughly `log(n)` elements as part of the proof (one for each 'level' of the tree). This means if you had a LOT of data, Merkle Trees are wayyyyy more efficient than storing arrays or mappings.
 
 > When ENS launched their token contract, they were airdropping the $ENS token to over 100,000 wallet addresses. They were able to deploy their contract, at a time of extremely high gas fees, for a MUCH lower price than what it would've been had they stored the wallet addresses in an array (where even storing a few hundred addresses could easily exceed gas limits of a block) - https://etherscan.io/tx/0xdfc76788b13ab1c033c7cd55fdb7a431b2bc8abe6b19ac9f7d22f4105bb43bff
 
