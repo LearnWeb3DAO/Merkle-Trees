@@ -11,7 +11,12 @@ A typical Merkle Tree looks something like this:
 
 (Reference from [using-merkle-trees-for-nft-whitelists](https://medium.com/@ItsCuzzo/using-merkle-trees-for-nft-whitelists-523b58ada3f9))
 
+<Quiz questionId="a74cbff9-9cea-4681-9252-29689f638236" />
+
 Let me explain what is going on. All the leaf nodes of the tree, i.e. nodes that don't have any further children, include hashes of data that you want to encode. Note that the values you want to encode in the tree are always just part of the leaf nodes. Since it is a binary tree, each non-leaf node has two children. As you move up from the leaf nodes, the parents will have the hash of the combined hashes of the leaf nodes, and so on.
+
+<Quiz questionId="647b1321-4c1a-4ef3-8de0-bbd4f9eb3f88" />
+<Quiz questionId="b655c4ef-c0a1-484a-823e-659c145261b1" />
 
 As you keep doing this, eventually you will end up at the single top-level node, known as the Merkle Tree Root, this will come to play a very important role.
 
@@ -22,6 +27,10 @@ Let's say we have 4 transactions: "Transaction A", B, C and D. All of them are e
 The following would be the resulting Merkle Tree of these transactions:
 
 ![](https://i.imgur.com/QeUy35i.jpg)
+
+<Quiz questionId="b0c860c7-4727-421c-9595-a5748e498965" />
+
+<Quiz questionId="9013e876-63d0-48de-b068-77856fdcc8f7" />
 
 ## Verifying Validity using the Merkle Root
 
@@ -43,6 +52,8 @@ Each blockchain uses different hash functions, but they all have the same proper
 
 The same input always has the same output when passed into a hashing function.
 
+<Quiz questionId="1eb97627-6813-4796-bea6-905a87f08433" />
+
 #### Computationally Efficient
 
 Calculating the hash of an input value is fast.
@@ -59,6 +70,8 @@ Two different inputs never generate the same output.
 
 For essentially all pre-specified outputs, it is computationally infeasible to find any input that hashes to that output. For example: given `y`, it is difficult to find an `x` such that `h(x) = y`
 
+<Quiz questionId="94fda14d-f497-4863-8d77-e18ad36cc8c0" />
+
 ## Benefits of Merkle Trees in Blockchains
 
 Merkle Trees allow for quick verification of data integrity.
@@ -67,6 +80,8 @@ The disk space used up is very little compared to the entire set of transactions
 
 If you have two different sets of transactions, verifying they are the same with a Merkle Tree is faster than verifying each and every single individual transaction to each other. One can verify that a block has not been modified by only knowing the Merkle Root.
 
+<Quiz questionId="61988b42-5f5e-4eeb-8c97-a720f16c41c6" />
+
 ## Use cases outside of the blockchain
 
 Merkle Trees aren't just used in blockchain applications. Some popular applications that use Merkle Trees are:
@@ -74,6 +89,8 @@ Merkle Trees aren't just used in blockchain applications. Some popular applicati
 - [IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System)
 - [Git](https://github.com)
 - Distributed databases such as [AWS DynamoDB](https://aws.amazon.com/dynamodb) and [Apache Cassandra](https://cassandra.apache.org/_/index.html) use Merkle trees to control discrepancies
+
+<Quiz questionId="0b9d9fae-b333-488d-8522-05eae2958cfd" />
 
 ## Verification of Presence in Merkle Trees
 So, how do we actually verify that some data is part of a Merkle Tree?
@@ -105,6 +122,8 @@ For our given example, we only need to provide the following nodes to be able to
 At this point, if the computed value of `H(ABCDEFGHIJKLMNOP)` matches the previously known value `r` that the Verifier had, it must be true that `K` existed in the Merkle Tree, or else the hashes wouldn't be the same. 
 
 This is *significantly* more efficent than looping over the entire Merkle Tree, as for a tree with `n` number of elements, you only have to provide roughly `log(n)` elements as part of the proof (one for each 'level' of the tree). This means if you had a LOT of data, Merkle Trees are wayyyyy more efficient than storing arrays or mappings.
+
+<Quiz questionId="73f32f9a-2210-4842-9a3f-7d72ebc00115" />
 
 > When ENS launched their token contract, they were airdropping the $ENS token to over 100,000 wallet addresses. They were able to deploy their contract, at a time of extremely high gas fees, for a MUCH lower price than what it would've been had they stored the wallet addresses in an array (where even storing a few hundred addresses could easily exceed gas limits of a block) - https://etherscan.io/tx/0xdfc76788b13ab1c033c7cd55fdb7a431b2bc8abe6b19ac9f7d22f4105bb43bff
 
@@ -287,3 +306,5 @@ Cheers 🥂
 
 # Contributors
 **This module was built in collaboration with [Hypotenuse Labs](https://hypotenuse.ca/)**
+
+<SubmitQuiz />
