@@ -60,15 +60,11 @@ Calculating the hash of an input value is fast.
 
 #### Cannot be Reversed Engineered
 
-Given a resulting hash, it is near impossible to determine the input. i.e. hash functions are one-way functions.
+Given a resulting hash, it is near impossible to determine the input. i.e. hash functions are one-way functions. For example: given `y`, it is difficult to find an `x` such that `h(x) = y`
 
 #### Collision Resistant
 
 Two different inputs never generate the same output.
-
-#### Pre-Image Resistant
-
-For essentially all pre-specified outputs, it is computationally infeasible to find any input that hashes to that output. For example: given `y`, it is difficult to find an `x` such that `h(x) = y`
 
 <Quiz questionId="94fda14d-f497-4863-8d77-e18ad36cc8c0" />
 
