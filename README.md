@@ -201,7 +201,7 @@ What's exactly happening here? So as we mentioned we are not storing the address
 We also have another function `checkInWhitelist` which takes in a `proof` and `maxAllowanceToMint`. 
 `maxAllowanceToMint` is a variable that keeps track of the number of NFT's a given address can mint.
 
-The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
+The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` (Pronouced : 'ketchak') hash function which requires the hash string to generate the hash.
 
 Now we use the OpenZeppelin's `MerkleProof` library to verify that the proof sent by the user is indeed valid. Note how Openzeppelin performs the verification on a high level is similar to the verification of the Merkle proof we talked about earlier in the tutorial.
 
