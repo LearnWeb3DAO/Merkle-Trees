@@ -149,7 +149,7 @@ Let's see how all this works practically for our whitelist example.
 - If you are on a Windows machine, please do this extra step and install these libraries as well :)
 
   ```bash
-  npm install --save-dev @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
+  npm install --save-dev @nomicfoundation/hardhat-toolbox @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
   ```
 
 - In the same directory where you installed Hardhat run:
