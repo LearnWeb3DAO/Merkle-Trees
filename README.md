@@ -201,7 +201,7 @@ What's exactly happening here? So as we mentioned we are not storing the address
 We also have another function `checkInWhitelist` which takes in a `proof` and `maxAllowanceToMint`. 
 `maxAllowanceToMint` is a variable that keeps track of the number of NFT's a given address can mint.
 
-The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
+The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into a bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
 
 Now we use the OpenZeppelin's `MerkleProof` library to verify that the proof sent by the user is indeed valid. Note how Openzeppelin performs the verification on a high level is similar to the verification of the Merkle proof we talked about earlier in the tutorial.
 
@@ -284,7 +284,7 @@ After we create the `Merkle Tree`, we get its root by calling the `getHexRoot` f
 After our contract is verified, we can call our `checkInWhitelist` by providing the proof. So now here we will check that `(owner.address, 2)` exists in our dataset. To generate the proof, we hash the encoded value of `(owner.address, 2)` and generate a proof using 
 `getHexProof` function from `merkletreejs` library.
 
-This proof is then sent in `checkInWhitelist` as an argument which further returns a value of true to signify that `(owner.address, 2)` exists.
+This proof is then sent in `checkInWhitelist` as an argument that further returns a value of true to signify that `(owner.address, 2)` exists.
 
 To run the test, execute the following command from the root of the directory:
 
