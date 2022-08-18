@@ -95,7 +95,7 @@ You don't want the verifier to loop over every leaf node of the Merkle Tree, as 
 
 Let's say the `Verifier` only has the `Merkle Root` `r`, that is, the top-level parent node of the tree. You, as a `Prover`, want to prove to the `Verifier` that some value `K` exists in the Merkle Tree.
 
-To do this, you can generate a `Merkle Proof`. Let's try to understand what a `Merkle Proof` actually is with an example Merkle Tree.
+To do this, you can generate a `Merkle Proof`. Let's try to understand what a `Merkle Proof` is with an example Merkle Tree.
 
 ![](https://i.imgur.com/XsxMA0b.png)
 (Referenced [Merkle Proofs Explained](https://medium.com/crypto-0-nite/merkle-proofs-explained-6dd429623dc5))
@@ -104,13 +104,13 @@ The main idea is as follows: if you can give the `Verifier` the value of `K`, al
 
 In the diagram above, let's think about what info must be given to the Verifier that will positively prove to the Verifier that `K` is part of the Merkle Tree.
 
-- Value of `K` itself (so Verifier can compute `H(K)` on it's own)
+- Value of `K` itself (so Verifier can compute `H(K)` on its own)
 - `H(L)`, so the verifier can compute `H(KL)`
 - `H(IJ)` so the verifier can compute `H(IJKL)`
 - `H(MNOP)` so the verifier can compute `H(IJKLMNOP)`
 - `H(ABCDEFGH)` so the verifier can compute `H(ABCDEFGHIJKLMNOP)`
 
-Again it is important to remember that only one given combination of nodes can generate this unique root `r` because the Merkle tree is a  `collision-resistant hash function` which means it is a hash function that given two inputs is almost impossible to produce the same output.
+Again, it is important to remember that only one given combination of nodes can generate this unique root `r` because the Merkle tree is a  `collision-resistant hash function` which means it is a hash function that given two inputs is almost impossible to produce the same output.
 
 For our given example, we only need to provide the following nodes to be able to prove that H[K] actually exists in our nodes:
 ![](https://i.imgur.com/nDe4iYS.png)
@@ -126,7 +126,7 @@ This is *significantly* more efficient than looping over the entire Merkle Tree,
 ## Use Cases in Smart Contracts
 Since the Verifier does not need to store the entire Merkle Tree to verify if something is a part of it, Merkle Trees actually come in quite handy for certain things.
 
-In Sophomore, we created a Whitelist dApp that stored user addresses in a mapping. While that approach works, storing data in smart contract storage is by far the most expensive thing you can do in terms of gas. So what if you had to store 1000 addresses? What if 10,000? What about 100,000? 🤯
+In Sophomore, we created a Whitelist dApp that stored user addresses in a mapping. While that approach works, storing data in smart contract storage is by far the most expensive thing you can do in terms of gas. So what if you had to store 1000 addresses? What about 10,000, or 100,000? 🤯
 
 At that point, utilizing smart contract storage directly is just infeasible and can easily cost millions of dollars just to whitelist people. On the other hand, you could build up a Merkle Tree and just store the Merkle Root value in the contract - a measly `bytes32` value. In this scenario, the contract is now the `Verifier`, and users who wish to use their whitelist spot for minting NFTs, let's say, become the `Provers` proving that they are indeed part of the whitelist. Let's see how this would work.
 
