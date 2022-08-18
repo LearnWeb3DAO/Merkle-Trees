@@ -22,7 +22,7 @@ As you keep doing this, eventually you will end up at the single top-level node,
 
 ## Simple Example
 
-Let's say we have 4 transactions: "Transaction A", B, C and D. All of them are executed in the same block. Each of these transactions is going to get hashed. Let's call those hashes "Hash A", B, C, and D respectively.
+Let's say we have 4 transactions: "Transaction A", B, C, and D. All of them are executed in the same block. Each of these transactions is going to get hashed. Let's call those hashes "Hash A", B, C, and D respectively.
 
 The following would be the resulting Merkle Tree of these transactions:
 
@@ -74,7 +74,7 @@ Merkle Trees allow for quick verification of data integrity.
 
 The disk space used up is very little compared to the entire set of transactions. The Merkle Root is included in the block header for this reason.
 
-If you have two different sets of transactions, verifying they are the same with a Merkle Tree is faster than verifying each and every single individual transaction to each other. One can verify that a block has not been modified by only knowing the Merkle Root.
+If you have two sets of transactions that are identical, verifying that they are the same with a Merkle Tree is faster than verifying the transactions individually one at a time. One can verify that a block has not been modified by only knowing the Merkle Root.
 
 <Quiz questionId="61988b42-5f5e-4eeb-8c97-a720f16c41c6" />
 
