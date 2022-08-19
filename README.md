@@ -135,9 +135,14 @@ At that point, utilizing smart contract storage directly is just infeasible and 
 ### Prerequisites
 - Please learn the basics of Mocha and Chai if you are not aware of them, to understand what they are follow this [tutorial](https://medium.com/spidernitt/testing-with-mocha-and-chai-b8da8d2e10f2)
 
+> Note
+ All of these commands should work smoothly . 
+ If you are on windows and face Errors Like `Cannot read properties of null (reading 'pickAlgorithm')`
+ Try Clearing the NPM cache using `npm cache clear --force`
+ 
 ----
 
-Let's see how all this works practically for our whitelist example.
+  Let's see how all this works practically for our whitelist example.
 
 - To set up a Hardhat project, Open up a terminal and execute these commands
 
@@ -149,7 +154,7 @@ Let's see how all this works practically for our whitelist example.
 - If you are on a Windows machine, please do this extra step and install these libraries as well :)
 
   ```bash
-  npm install --save-dev @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
+  npm install --save-dev @nomicfoundation/hardhat-toolbox @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers ethers
   ```
 
 - In the same directory where you installed Hardhat run:
