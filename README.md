@@ -1,6 +1,6 @@
 # Merkle Trees
 
-Merkle Trees are a fundamental concept in blockchain technology. They're a special kind of binary tree which is used to encode large chunks of information. The cool thing about Merkle Trees is that they kind of 'build up' from the bottom-up, and allow you to verify if some value is present in the tree or not without having to loop over every element of the tree. This can be quite useful, as we will see. 🧐
+Merkle Trees are a fundamental concept in blockchain technology. They're a special kind of binary tree that is used to encode large chunks of information. The cool thing about Merkle Trees is that they kind of 'build up' from the bottom-up and allow you to verify if some value is present in the tree or not without having to loop over every element of the tree. This can be quite useful, as we will see. 🧐
 
 ## What is a Merkle Tree?
 
@@ -22,7 +22,7 @@ As you keep doing this, eventually you will end up at the single top-level node,
 
 ## Simple Example
 
-Let's say we have 4 transactions: "Transaction A", B, C and D. All of them are executed in the same block. Each of these transactions is going to get hashed. Let's call those hashes "Hash A", B, C, and D respectively.
+Let's say we have 4 transactions: "Transaction A", B, C, and D. All of them are executed in the same block. Each of these transactions is going to get hashed. Let's call those hashes "Hash A", B, C, and D respectively.
 
 The following would be the resulting Merkle Tree of these transactions:
 
@@ -74,7 +74,7 @@ Merkle Trees allow for quick verification of data integrity.
 
 The disk space used up is very little compared to the entire set of transactions. The Merkle Root is included in the block header for this reason.
 
-If you have two different sets of transactions, verifying they are the same with a Merkle Tree is faster than verifying each and every single individual transaction to each other. One can verify that a block has not been modified by only knowing the Merkle Root.
+If you have two sets of transactions that are identical, verifying that they are the same with a Merkle Tree is faster than verifying the transactions individually one at a time. One can verify that a block has not been modified by only knowing the Merkle Root.
 
 <Quiz questionId="61988b42-5f5e-4eeb-8c97-a720f16c41c6" />
 
@@ -95,7 +95,7 @@ You don't want the verifier to loop over every leaf node of the Merkle Tree, as 
 
 Let's say the `Verifier` only has the `Merkle Root` `r`, that is, the top-level parent node of the tree. You, as a `Prover`, want to prove to the `Verifier` that some value `K` exists in the Merkle Tree.
 
-To do this, you can generate a `Merkle Proof`. Let's try to understand what a `Merkle Proof` actually is with an example Merkle Tree.
+To do this, you can generate a `Merkle Proof`. Let's try to understand what a `Merkle Proof` is with an example Merkle Tree.
 
 ![](https://i.imgur.com/XsxMA0b.png)
 (Referenced [Merkle Proofs Explained](https://medium.com/crypto-0-nite/merkle-proofs-explained-6dd429623dc5))
@@ -104,13 +104,13 @@ The main idea is as follows: if you can give the `Verifier` the value of `K`, al
 
 In the diagram above, let's think about what info must be given to the Verifier that will positively prove to the Verifier that `K` is part of the Merkle Tree.
 
-- Value of `K` itself (so Verifier can compute `H(K)` on it's own)
+- Value of `K` itself (so Verifier can compute `H(K)` on its own)
 - `H(L)`, so the verifier can compute `H(KL)`
 - `H(IJ)` so the verifier can compute `H(IJKL)`
 - `H(MNOP)` so the verifier can compute `H(IJKLMNOP)`
 - `H(ABCDEFGH)` so the verifier can compute `H(ABCDEFGHIJKLMNOP)`
 
-Again it is important to remember that only one given combination of nodes can generate this unique root `r` because the Merkle tree is a  `collision-resistant hash function` which means it is a hash function that given two inputs is almost impossible to produce the same output.
+Again, it is important to remember that only one given combination of nodes can generate this unique root `r` because the Merkle tree is a  `collision-resistant hash function` which means it is a hash function that given two inputs is almost impossible to produce the same output.
 
 For our given example, we only need to provide the following nodes to be able to prove that H[K] actually exists in our nodes:
 ![](https://i.imgur.com/nDe4iYS.png)
@@ -126,7 +126,7 @@ This is *significantly* more efficient than looping over the entire Merkle Tree,
 ## Use Cases in Smart Contracts
 Since the Verifier does not need to store the entire Merkle Tree to verify if something is a part of it, Merkle Trees actually come in quite handy for certain things.
 
-In Sophomore, we created a Whitelist dApp that stored user addresses in a mapping. While that approach works, storing data in smart contract storage is by far the most expensive thing you can do in terms of gas. So what if you had to store 1000 addresses? What if 10,000? What about 100,000? 🤯
+In Sophomore, we created a Whitelist dApp that stored user addresses in a mapping. While that approach works, storing data in smart contract storage is by far the most expensive thing you can do in terms of gas. So what if you had to store 1000 addresses? What about 10,000, or 100,000? 🤯
 
 At that point, utilizing smart contract storage directly is just infeasible and can easily cost millions of dollars just to whitelist people. On the other hand, you could build up a Merkle Tree and just store the Merkle Root value in the contract - a measly `bytes32` value. In this scenario, the contract is now the `Verifier`, and users who wish to use their whitelist spot for minting NFTs, let's say, become the `Provers` proving that they are indeed part of the whitelist. Let's see how this would work.
 
@@ -201,7 +201,7 @@ What's exactly happening here? So as we mentioned we are not storing the address
 We also have another function `checkInWhitelist` which takes in a `proof` and `maxAllowanceToMint`. 
 `maxAllowanceToMint` is a variable that keeps track of the number of NFT's a given address can mint.
 
-The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
+The value we are actually storing in the Merkle Tree, for this use case, is storing the address of the user along with how many NFTs they are allowed to mint. You can store whatever data you want in Merkle Trees, but this works for our example. The hash of the leaf node on which this address exists can be computed by first encoding the address of the sender and the `maxAllowanceToMint` into a bytes string which further gets passed down to the `keccak256` hash function which requires the hash string to generate the hash.
 
 Now we use the OpenZeppelin's `MerkleProof` library to verify that the proof sent by the user is indeed valid. Note how Openzeppelin performs the verification on a high level is similar to the verification of the Merkle proof we talked about earlier in the tutorial.
 
@@ -284,7 +284,7 @@ After we create the `Merkle Tree`, we get its root by calling the `getHexRoot` f
 After our contract is verified, we can call our `checkInWhitelist` by providing the proof. So now here we will check that `(owner.address, 2)` exists in our dataset. To generate the proof, we hash the encoded value of `(owner.address, 2)` and generate a proof using 
 `getHexProof` function from `merkletreejs` library.
 
-This proof is then sent in `checkInWhitelist` as an argument which further returns a value of true to signify that `(owner.address, 2)` exists.
+This proof is then sent in `checkInWhitelist` as an argument that further returns a value of true to signify that `(owner.address, 2)` exists.
 
 To run the test, execute the following command from the root of the directory:
 
